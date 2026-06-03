@@ -12,7 +12,7 @@ pipeline {
     post {
         success {
             emailext(
-                to: 'yourmail@gmail.com',
+                to: 'cseshamim47@gmail.com',
                 subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: "Pipeline succeeded."
             )
@@ -20,7 +20,7 @@ pipeline {
 
         failure {
             emailext(
-                to: 'yourmail@gmail.com',
+                to: 'cseshamim47@gmail.com',
                 subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: "Pipeline failed. Check Jenkins console log."
             )
