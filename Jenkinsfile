@@ -2,24 +2,33 @@ pipeline {
     agent any
 
     stages {
-
-        stage('Clone') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build Image') {
+        stage('Build Docker Image') {
             steps {
-                sh "docker build -t myapp:${BUILD_NUMBER} ."
+                sh "docker build -t simple-html:${BUILD_NUMBER} ."
             }
         }
 
-        stage('Run Container') {
+        stage('Deploy Container') {
             steps {
-                sh "docker rm -f myapp || true"
-                sh "docker run -d -p 5000:5000 --name myapp myapp:${BUILD_NUMBER}"
+                sh "docker rm -f simple-html || true"
+                sh "docker run -d -p 8081:80 --name simple-html simple-html:${BUILD_NUMBER}"
             }
+        }
+    }
+
+    post {
+        success {
+            echo "CI/CD Success!"
+        }
+
+        failure {
+            echo "CI/CD Failed!"
         }
     }
 }
