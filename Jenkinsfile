@@ -2,29 +2,24 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+
+        stage('Clone') {
             steps {
-                //echo "Building..."
-                sh 'exit 1'
+                checkout scm
             }
         }
-    }
 
-    post {
-        success {
-            emailext(
-                to: 'cseshamim47@gmail.com',
-                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Pipeline succeeded."
-            )
+        stage('Build Image') {
+            steps {
+                sh "docker build -t myapp:${BUILD_NUMBER} ."
+            }
         }
 
-        failure {
-            emailext(
-                to: 'cseshamim47@gmail.com',
-                subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Pipeline failed. Check Jenkins console log."
-            )
+        stage('Run Container') {
+            steps {
+                sh "docker rm -f myapp || true"
+                sh "docker run -d -p 5000:5000 --name myapp myapp:${BUILD_NUMBER}"
+            }
         }
     }
 }
